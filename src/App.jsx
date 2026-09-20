@@ -1,0 +1,90 @@
+import React, { useState } from 'react';
+import './App.css';
+
+function App() {
+  const [formData, setFormData] = useState({ name: '', dno: '' });
+  const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatusMessage({ type: '', text: '' });
+
+    try {
+      const response = await fetch('http://localhost:5000/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setStatusMessage({ type: 'success', text: result.message });
+        setFormData({ name: '', dno: '' }); // Reset form
+      } else {
+        setStatusMessage({ type: 'error', text: result.error || 'Something went wrong.' });
+      }
+    } catch (error) {
+      setStatusMessage({ type: 'error', text: 'Failed to connect to the server.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="container">
+      <div className="card">
+        <h2>User Registration Form</h2>
+
+        {statusMessage.text && (
+          <div className={`alert ${statusMessage.type}`}>
+            {statusMessage.text}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Enter full name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="dno">Door Number (D.No)</label>
+            <input
+              type="text"
+              id="dno"
+              name="dno"
+              placeholder="Enter door number"
+              value={formData.dno}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <button type="submit" disabled={loading} className="btn-submit">
+            {loading ? 'Saving...' : 'Submit'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default App;
