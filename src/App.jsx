@@ -3,7 +3,7 @@ import './App.css';
 
 // Dynamically use environment variable or fallback to local/render backend URL
 // Replace 'https://YOUR-EXPRESS-BACKEND.onrender.com' with your actual Render backend URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://client-z605.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://client-z605.onrender.com/api/users';
 
 function App() {
   const [formData, setFormData] = useState({ name: '', dno: '' });
