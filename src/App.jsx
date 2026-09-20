@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import './App.css';
 
+// Dynamically use environment variable or fallback to local/render backend URL
+// Replace 'https://YOUR-EXPRESS-BACKEND.onrender.com' with your actual Render backend URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://YOUR-EXPRESS-BACKEND.onrender.com';
+
 function App() {
   const [formData, setFormData] = useState({ name: '', dno: '' });
   const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
@@ -17,7 +21,8 @@ function App() {
     setStatusMessage({ type: '', text: '' });
 
     try {
-      const response = await fetch('https://client-z605.onrender.com/api/users', {
+      // Sends request directly to your Express backend service
+      const response = await fetch(`${API_BASE_URL}/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,13 +33,23 @@ function App() {
       const result = await response.json();
 
       if (response.ok) {
-        setStatusMessage({ type: 'success', text: result.message });
-        setFormData({ name: '', dno: '' }); // Reset form
+        setStatusMessage({ 
+          type: 'success', 
+          text: result.message || 'User details saved successfully!' 
+        });
+        setFormData({ name: '', dno: '' }); // Reset form input fields
       } else {
-        setStatusMessage({ type: 'error', text: result.error || 'Something went wrong.' });
+        setStatusMessage({ 
+          type: 'error', 
+          text: result.error || 'Failed to submit user details.' 
+        });
       }
     } catch (error) {
-      setStatusMessage({ type: 'error', text: 'Failed to connect to the server.' });
+      console.error('API Error:', error);
+      setStatusMessage({ 
+        type: 'error', 
+        text: 'Failed to connect to the server. Please verify your backend service is online.' 
+      });
     } finally {
       setLoading(false);
     }
@@ -79,7 +94,7 @@ function App() {
           </div>
 
           <button type="submit" disabled={loading} className="btn-submit">
-            {loading ? 'Saving...' : 'Submit'}
+            {loading ? 'Saving to Database...' : 'Submit'}
           </button>
         </form>
       </div>
