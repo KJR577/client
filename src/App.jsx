@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import './App.css';
-
-// Dynamically use environment variable or fallback to local/render backend URL
-// Replace 'https://YOUR-EXPRESS-BACKEND.onrender.com' with your actual Render backend URL
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://client-z605.onrender.com';
 
 function App() {
@@ -21,7 +18,7 @@ function App() {
     setStatusMessage({ type: '', text: '' });
 
     try {
-      // Sends request directly to your Express backend service
+      
       const response = await fetch(`${API_BASE_URL}/api/users`, {
         method: 'POST',
         headers: {
@@ -37,7 +34,7 @@ function App() {
           type: 'success', 
           text: result.message || 'User details saved successfully!' 
         });
-        setFormData({ name: '', dno: '' }); // Reset form input fields
+        setFormData({ name: '', dno: '' }); 
       } else {
         setStatusMessage({ 
           type: 'error', 
@@ -81,12 +78,12 @@ function App() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="dno">Door Number (D.No)</label>
+            <label htmlFor="dno">Register Number (Reg.No)</label>
             <input
               type="text"
               id="dno"
               name="dno"
-              placeholder="Enter door number"
+              placeholder="Enter Register number"
               value={formData.dno}
               onChange={handleChange}
               required
